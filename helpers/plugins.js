@@ -73,7 +73,7 @@ module.exports = {
 
 		const plugins = Object.keys(PLUGIN_CATALOG);
 		const deps = {};
-		for(i=0;i<plugins.length;i++) {
+		for(var i=0;i<plugins.length;i++) {
 			const pluginID = plugins[i];
             // const pluginCatalog = PLUGIN_CATALOG[pluginID];
 			const pluginConfig = PLUGIN_CONFIGS[pluginID];
@@ -94,7 +94,7 @@ module.exports = {
     //Loading all Plugins and its Services
     activatePlugins: async function(broker) {
         const plugins = Object.keys(PLUGIN_CATALOG);
-        for(i=0;i<plugins.length;i++) {
+        for(var i=0;i<plugins.length;i++) {
             const pluginID = plugins[i];
             const pluginConfig = PLUGIN_CATALOG[pluginID];
 
@@ -204,7 +204,7 @@ async function catalogPlugins(dirPath, depth = 0, returnTree = false) {
 				children
 			});
 		} else if (entry.isFile()) {
-			list[entry.name.replace(/.json/, '').replace(/.js/, '')] = entry.name;
+			list[entry.name.replace(/\.json/, '').replace(/\.js/, '')] = entry.name;
 			tree.push({
 				type: "file",
 				name: entry.name,
@@ -282,7 +282,7 @@ function loadPluginRoutes(broker, pluginName, routeConfig) {
 			// log_info(rPath, path, serviceSchema.actions[rPath]);
 		})
 	} else {
-		log_info(`Route Not Enabled for ${pluginID}`);
+		log_info(`Route Not Enabled for ${pluginName}`);
 	}
 
 	serviceSchema.actions["source"] = {
@@ -313,7 +313,7 @@ function loadPluginRoutes(broker, pluginName, routeConfig) {
 			});
 			// log_info("FILES", FILES);
 			
-			if(ctx.params.params.rebuild || ctx.params.params.rebuild==="true") {
+			if(ctx.params?.params?.recache || ctx.params?.params?.recache==="true") {
 				if(fs.existsSync(FILES[1])) FILES[0] = FILES[0]+"_1";
 				if(FILES[2] && fs.existsSync(FILES[3])) FILES[2] = FILES[2]+"_1";
 			}
@@ -327,7 +327,7 @@ function loadPluginRoutes(broker, pluginName, routeConfig) {
 
 					switch(ext) {
 						case "jsx":
-							const jsContent = JITCOMPILER.compileJSX(FILES[i]);
+							const jsContent = await JITCOMPILER.compileJSX(FILES[i]);
 
 							return jsContent;
 							break;
@@ -467,6 +467,10 @@ function loadPluginRoutes(broker, pluginName, routeConfig) {
 	// log_info("PLUGIN", pluginName.toUpperCase(), serviceSchema);
 	
 	broker.createService(serviceSchema);
+
+	var serviceSchema2 = _.cloneDeep(serviceSchema);
+	serviceSchema2.name = serviceSchema2.name.toLowerCase();
+	broker.createService(serviceSchema2);
 }
 
 async function runAction(ctx, config, path, rPath) {
@@ -571,6 +575,7 @@ function generateController(controllerID, controllerConfig) {
     return newController;
 }
 
+//installDeps overwrites package.json on every boot, this is secondary package.json and not main one
 async function installDeps(deps) {
 	if(deps['core']) delete deps['core'];
 
@@ -585,6 +590,7 @@ async function installDeps(deps) {
 		JSON.stringify(pkg, null, 2)
 	);
 
+	//Wait further process till all installation is completed
 	execSync("npm install --only=prod", {
 		cwd: "./plugins",
 		stdio: "inherit"

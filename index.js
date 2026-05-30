@@ -39,7 +39,7 @@ fs.readdirSync('./controllers/').forEach(function(file) {
         global[clsName] = require(filePath);
 
         if(typeof global[clsName]["initialize"] == "function") {
-            global[clsName].initialize(this);
+            global[clsName].initialize();
         }
     }
 });

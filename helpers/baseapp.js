@@ -67,7 +67,7 @@ module.exports = {
 
             var dbSchemaDir = LOGIKS_CONFIG.ROOT_PATH+`/plugins/${pluginID}/dbschema/`;
             try {
-                await fsPromise.mkdir(dbSchemaDir,true);
+                await fsPromise.mkdir(dbSchemaDir, { recursive: true });
             } catch(e) {}
 
 			var dbSchemaFiles = false;
@@ -82,7 +82,7 @@ module.exports = {
                                 time: fs.statSync(path.join(dbSchemaDir, f.name)).mtimeMs
                             }));
                     if (matched.length>0) {
-                        matched.sort((a, b) => b.time - a.time);
+                        matched.sort((a, b) => b.time - a.time);//using mtime as creation time as version
 
                         dbSchemaFiles = matched[0];
 
@@ -99,7 +99,7 @@ module.exports = {
                     case "EXPORT":
                         const filename = `schema_${process.env.BUILD?process.env.BUILD:"0000"}.json`;//${Date.now()}
                         const filepath = path.join(dbSchemaDir, filename);
-                        await fsPromise.writeFile(filepath, JSON.stringify(pluginDBSchema.schema, "\n", "\t"));
+                        await fsPromise.writeFile(filepath, JSON.stringify(pluginDBSchema.schema, null, "\t"));
 
                         console.log("\x1b[32m%s\x1b[0m", `Migration Completed for ${pluginID} in ${pluginDBSchema.mode} Mode @${filename}`);
                         log_info(`Migration Completed for ${pluginID} in ${pluginDBSchema.mode} Mode`);
@@ -133,13 +133,13 @@ global.log_info = function(...args) {
 
 global.log_warn = function(...args) {
     //console.warn(...args);
-    if(MAIN_BROKER) MAIN_BROKER.logger.info(...args);
+    if(MAIN_BROKER) MAIN_BROKER.logger.warn(...args);
     else console.warn(...args);
 }
 
 global.log_error = function(...args) {
     //console.error(...args);
-    if(MAIN_BROKER) MAIN_BROKER.logger.info(...args);
+    if(MAIN_BROKER) MAIN_BROKER.logger.error(...args);
     else console.error(...args);
 }
 
@@ -192,6 +192,12 @@ global._call = async function(serviceString, ...args) {
     log_info("CALLING_SERVICE", serviceString);
 
     try {
+        // Call signature is (action, params, opts). If args has more than one element, the options object ends up in the wrong position and is ignored.
+        //This is correct one, needs to be tested
+        // const response = await MAIN_BROKER.call(serviceString, args[0], {
+        //         timeout: 5000,
+        //         retries: 0
+        //     });
         const response = await MAIN_BROKER.call(serviceString, ...args, {
                 timeout: 5000,
                 retries: 0

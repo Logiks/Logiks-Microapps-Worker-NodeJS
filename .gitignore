@@ -5,6 +5,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 zold/
+.vscode/
 
 package-lock.json
 plugins/*

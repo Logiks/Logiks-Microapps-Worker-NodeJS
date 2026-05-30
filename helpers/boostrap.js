@@ -205,25 +205,37 @@ module.exports = {
 				BROKER_CONNECTED = true;
 				await registerWithMainBroker();
 				broker.logger.info("Node connected:", payload.node.id);
+
+				console.log("\n\x1b[34m%s\x1b[0m", "MicroApp Started & Connected to Cluster");
+
+				callback(BROKER_CONNECTED);
 			});
 
 			broker.localBus.on("$node.disconnected", async payload => {
 				BROKER_CONNECTED = false;
 				broker.logger.warn("Node disconnected:", payload.node.id);
+
+				console.log("\n\x1b[31m%s\x1b[0m", "MicroApp Started & But could not connect Cluster");
+
+				callback(BROKER_CONNECTED);
 			});
 
 			return 0;
 		})
-		.catch(err => log_error(`Error occured! ${err.message}`))
-		.finally(a=> {
-			if(BROKER_CONNECTED) {
-				console.log("\n\x1b[34m%s\x1b[0m", "MicroApp Started & Connected to Cluster");
-			} else {
-				console.log("\n\x1b[31m%s\x1b[0m", "MicroApp Started & But could not connect Cluster");
-			}
+		.catch(err => {
+			log_error(`Error occured! ${err.message}`)
 			
-			callback(BROKER_CONNECTED);
+			callback(false);
 		})
+		// .finally(a=> {
+		// 	if(BROKER_CONNECTED) {
+		// 		console.log("\n\x1b[34m%s\x1b[0m", "MicroApp Started & Connected to Cluster");
+		// 	} else {
+		// 		console.log("\n\x1b[31m%s\x1b[0m", "MicroApp Started & But could not connect Cluster");
+		// 	}
+			
+		// 	callback(BROKER_CONNECTED);
+		// })
 
 		return broker;
 	}
