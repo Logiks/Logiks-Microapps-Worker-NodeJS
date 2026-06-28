@@ -41,7 +41,7 @@ module.exports = {
 				// zone: "asia"
 			},
 
-			serializer: "Notepack",
+			serializer: process.env.TRANSPORTER_SERIALIZER || "json",
 			logger: true,
 			// logger: console,
 			logLevel: process.env.PLUGIN_LOG_LEVEL,//"info",
@@ -98,6 +98,7 @@ module.exports = {
 					break;
 				} catch (err) {
 					// log_error("ERROR Registering Application", err);
+					console.error("ERROR Registering Application", err);
 					broker.logger.warn(
 						`⏳ Main broker not ready yet or I am unauthorised due to cluster_token. Retry ${attempt} in 5s...`,
 						err.message
