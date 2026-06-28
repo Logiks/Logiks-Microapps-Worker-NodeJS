@@ -41,6 +41,7 @@ module.exports = {
 				// zone: "asia"
 			},
 
+			serializer: "Notepack",
 			logger: true,
 			// logger: console,
 			logLevel: process.env.PLUGIN_LOG_LEVEL,//"info",
