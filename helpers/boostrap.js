@@ -87,14 +87,14 @@ module.exports = {
 			while (true) {
 				attempt++;
 				try {
-					await broker.call("system.registerWorker", payload, {
+					const a1 = await broker.call("system.registerWorker", payload, {
 						timeout: 5000,
 						retries: 0
 					});
 
 					await BASEAPP.connect(broker);
 
-					broker.logger.info("Worker successfully registered with main broker", payload);
+					broker.logger.info("Worker successfully registered with main broker", a1);
 					break;
 				} catch (err) {
 					// log_error("ERROR Registering Application", err);

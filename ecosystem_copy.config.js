@@ -1,6 +1,6 @@
 module.exports = {
   apps : [{
-    name: 'Logiks_MicroApp',
+    name: 'Logiks_Worker',
     script: 'index.js',
     instances : '1',
     watch: ["services/*"],

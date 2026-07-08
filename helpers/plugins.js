@@ -591,7 +591,7 @@ async function installDeps(deps) {
 	);
 
 	//Wait further process till all installation is completed
-	execSync("npm install --only=prod", {
+	execSync("npm install --omit=dev", {
 		cwd: "./plugins",
 		stdio: "inherit"
 	});
