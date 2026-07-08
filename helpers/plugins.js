@@ -360,38 +360,6 @@ function loadPluginRoutes(broker, pluginName, routeConfig) {
 					ctx.params
 				);
 			}
-			
-
-			// var sourceFile = `plugins/${pluginName}/${ctx.params.folder}/${ctx.params.file}`;
-			// var sourceFile_JSX = `plugins/${pluginName}/${ctx.params.folder}/${ctx.params.file}`.replace('.js', ".jsx");
-			
-			// if(ctx.params.params.rebuild || ctx.params.params.rebuild==="true") {
-			// 	if(fs.existsSync(sourceFile_JSX)) {
-			// 		sourceFile = sourceFile+1;
-			// 	}
-			// }
-
-			// if(fs.existsSync(sourceFile)) {
-			// 	var sourceData = fs.readFileSync(sourceFile, "utf8");
-			// 	try {
-			// 		if(ext=="json") {
-			// 			const temp = JSON.parse(sourceData);
-			// 			if(temp) sourceData = temp;
-			// 		}
-			// 	} catch(e) {log_error(e)}
-			// 	return sourceData;
-			// } else if(fs.existsSync(sourceFile_JSX)) {
-			// 	const jsContent = JITCOMPILER.compileJSX(sourceFile_JSX);
-
-			// 	return jsContent;
-			// } else {
-			// 	throw new LogiksError(
-			// 		"Invalid Source File",
-			// 		404,
-			// 		"INVALID_SOURCE_FILE",
-			// 		ctx.params
-			// 	);
-			// }
 		}
 	}
 
@@ -427,6 +395,16 @@ function loadPluginRoutes(broker, pluginName, routeConfig) {
 					return "";
 				}
 			}
+		}
+	}
+
+	serviceSchema.actions["config"] = {
+		params: {
+			paramId: "string",
+		},
+		async handler(ctx) {
+			const paramId = ctx.params.paramId;
+			return PLUGIN_CONFIGS[pluginName]?.CONFIG[paramId] || {};
 		}
 	}
 
