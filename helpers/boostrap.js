@@ -229,15 +229,15 @@ module.exports = {
 			
 			callback(false);
 		})
-		// .finally(a=> {
-		// 	if(BROKER_CONNECTED) {
-		// 		console.log("\n\x1b[34m%s\x1b[0m", "MicroApp Started & Connected to Cluster");
-		// 	} else {
-		// 		console.log("\n\x1b[31m%s\x1b[0m", "MicroApp Started & But could not connect Cluster");
-		// 	}
+		.finally(a=> {
+			if(BROKER_CONNECTED) {
+				console.log("\n\x1b[34m%s\x1b[0m", "MicroApp Started & Connected to Cluster");
+			} else {
+				console.log("\n\x1b[31m%s\x1b[0m", "MicroApp Started & But could not connect Cluster");
+			}
 			
-		// 	callback(BROKER_CONNECTED);
-		// })
+			callback(BROKER_CONNECTED);
+		})
 
 		return broker;
 	}
