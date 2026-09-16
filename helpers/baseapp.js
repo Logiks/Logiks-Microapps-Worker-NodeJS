@@ -162,7 +162,7 @@ global._helper = async function(helperString, ...args) {
     if(data.status=="success") {
         return data.data;
     } else {
-        log_error("ERROR CALLING HELPERS", data.message);
+        log_error("ERROR CALLING HELPERS", data.message, helperString);
         return false;
     }
 }
@@ -183,7 +183,7 @@ global._controller = async function(cmdString, ...args) {
     if(data.status=="success") {
         return data.data;
     } else {
-        log_error("ERROR CALLING CONTROLLER", data.message);
+        log_error("ERROR CALLING CONTROLLER", data.message, cmdString);
         return false;
     }
 }

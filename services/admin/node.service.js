@@ -42,7 +42,7 @@ module.exports = {
             handler() {
                 this.logger.info("Node is restarting...");
                 setTimeout(() => {
-                    process.exit(1);
+                    process.exit(0);
                 }, 1000);
                 return { message: "Restart initiated" };
             }
